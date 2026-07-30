@@ -256,6 +256,10 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
         this.validateCoupon(message);
         break;
 
+      case ConversationState.CROSS_SELL:
+        this.handleCrossSellInput(message);
+        break;
+
       default:
         this.sendBotMessage(LEALBOT_MESSAGES.EMPTY_STATE.text);
         this.currentQuickReplies = LEALBOT_MESSAGES.EMPTY_STATE.quick_reply || [];
@@ -275,6 +279,13 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (typeof value === 'string' && value.startsWith('product_')) {
       const productIndex = parseInt(value.replace('product_', ''));
       this.handleProductSelectionByIndex(productIndex);
+      return;
+    }
+
+    // Manejar adición de producto de venta cruzada por quick reply
+    if (typeof value === 'string' && value.startsWith('add_cross_')) {
+      const productId = parseInt(value.replace('add_cross_', ''));
+      this.addCrossSellingProductById(productId);
       return;
     }
 
@@ -810,7 +821,8 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
         description: product.description || '',
         price: product.price || 0,
         imageUrl: product.imageUrl || '',
-        categoryName: categoryName
+        categoryName: categoryName,
+        crossSellingProducts: product.crossSellingProducts || []
       });
     });
 
@@ -998,15 +1010,122 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   private finalizeProductSelection(): void {
-    // Preguntar si quiere agregar más productos
-    this.sendBotMessage('¿Deseas agregar algo más a tu orden?');
-    this.currentQuickReplies = [
-      { label: '➕ Agregar más', value: 'add_more' },
-      { label: '✅ Continuar con mi orden', value: 'skip_coupon' }
-    ];
-    this.conversationState = ConversationState.CROSS_SELL;
-    this.currentInputType = null;
-    this.shouldScroll = true;
+    let crossProducts: any[] = [];
+    let lastProductName = '';
+
+    if (this.state.cart.length > 0) {
+      const lastItem = this.state.cart[this.state.cart.length - 1];
+      lastProductName = lastItem.productName;
+      // Buscar en menuCategories el producto completo para obtener sus crossSellingProducts
+      for (const cat of this.menuCategories) {
+        const found = cat.products.find(p => p.productId === lastItem.productId);
+        if (found) {
+          crossProducts = found.crossSellingProducts || [];
+          break;
+        }
+      }
+    }
+
+    if (crossProducts && crossProducts.length > 0) {
+      // Ofrecer de forma no invasiva y amable
+      this.sendBotMessage(`😊 ¡Excelente elección! Para acompañar tu *${lastProductName}*, te sugiero probar:`);
+      
+      // Mostrar recomendaciones
+      crossProducts.slice(0, 3).forEach((p, idx) => {
+        this.sendBotMessage(`${idx + 1}. *${p.name}* - $${p.price} (${p.description || p.categoryName || ''})`);
+      });
+
+      // Crear las respuestas rápidas correspondientes
+      const chips: DialogChip[] = crossProducts.slice(0, 3).map(p => ({
+        label: `🥤 Agregar ${p.name} (+$${p.price})`,
+        value: `add_cross_${p.id}`
+      }));
+
+      chips.push({ label: '➕ Ver menú completo', value: 'add_more' });
+      chips.push({ label: '✅ Continuar con mi orden', value: 'skip_coupon' });
+
+      this.currentQuickReplies = chips;
+      this.conversationState = ConversationState.CROSS_SELL;
+      this.currentInputType = null;
+      this.shouldScroll = true;
+    } else {
+      // Flujo normal sin venta cruzada
+      this.sendBotMessage('¿Deseas agregar algo más a tu orden?');
+      this.currentQuickReplies = [
+        { label: '➕ Agregar más', value: 'add_more' },
+        { label: '✅ Continuar con mi orden', value: 'skip_coupon' }
+      ];
+      this.conversationState = ConversationState.CROSS_SELL;
+      this.currentInputType = null;
+      this.shouldScroll = true;
+    }
+  }
+
+  private addCrossSellingProductById(productId: number): void {
+    let productToSelect: any = null;
+    // Buscar en todas las categorías
+    for (const cat of this.menuCategories) {
+      const found = cat.products.find(p => p.productId === productId);
+      if (found) {
+        productToSelect = found;
+        break;
+      }
+    }
+
+    if (productToSelect) {
+      this.addProductToCart(productToSelect);
+    } else {
+      this.sendBotMessage('⚠️ Lo siento, no encontré ese producto en el menú actual.');
+      this.finalizeProductSelection();
+    }
+  }
+
+  private handleCrossSellInput(message: string): void {
+    const cleanMsg = message.toLowerCase().trim();
+    if (
+      cleanMsg.includes('no') ||
+      cleanMsg.includes('omitir') ||
+      cleanMsg.includes('continuar') ||
+      cleanMsg.includes('listo') ||
+      cleanMsg.includes('no gracias') ||
+      cleanMsg.includes('pagar')
+    ) {
+      this.reviewOrder();
+    } else if (
+      cleanMsg.includes('si') ||
+      cleanMsg.includes('sí') ||
+      cleanMsg.includes('agregar') ||
+      cleanMsg.includes('ver') ||
+      cleanMsg.includes('menu') ||
+      cleanMsg.includes('menú')
+    ) {
+      this.browseMenu();
+    } else {
+      // Buscar si coincide con el nombre de un producto sugerido
+      let crossProducts: any[] = [];
+      if (this.state.cart.length > 0) {
+        const lastItem = this.state.cart[this.state.cart.length - 1];
+        for (const cat of this.menuCategories) {
+          const found = cat.products.find(p => p.productId === lastItem.productId);
+          if (found) {
+            crossProducts = found.crossSellingProducts || [];
+            break;
+          }
+        }
+      }
+
+      const foundProduct = crossProducts.find(p =>
+        p.name.toLowerCase().includes(cleanMsg) ||
+        cleanMsg.includes(p.name.toLowerCase())
+      );
+
+      if (foundProduct) {
+        this.addCrossSellingProductById(foundProduct.id);
+      } else {
+        this.sendBotMessage('¿Deseas agregar alguna de las sugerencias, ver el menú completo o continuar con tu orden?');
+        this.shouldScroll = true;
+      }
+    }
   }
 
   private handleSkipSuggestion(): void {

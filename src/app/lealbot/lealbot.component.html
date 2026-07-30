@@ -1,17 +1,17 @@
 <!-- Botón Flotante -->
 <div class="lealbot-floating-container" *ngIf="!state.isOpen">
   <div class="lealbot-message-bubble-floating">
-    <span class="lealbot-message-text">¡Ordena aquí! 🍽️</span>
+    <span class="lealbot-message-text">
+      <span class="text-label">¡Ordena aquí!</span>
+      <span class="lealbot-emoji">🍽️</span>
+    </span>
   </div>
   <div class="lealbot-floating-button" (click)="toggleChat()">
     <button
-      pButton
       type="button"
-      icon="pi pi-comments"
-      [rounded]="true"
-      [text]="true"
-      severity="info"
-      class="lealbot-bot-button">
+      class="lealbot-bot-button"
+      aria-label="Abrir chat con Lealbot">
+      <i class="pi pi-comments"></i>
     </button>
     <span class="lealbot-pulse-ring"></span>
   </div>
@@ -19,13 +19,10 @@
 
 <div class="lealbot-floating-button-open" *ngIf="state.isOpen" (click)="toggleChat()">
   <button
-    pButton
     type="button"
-    icon="pi pi-comments"
-    [rounded]="true"
-    [text]="true"
-    severity="info"
-    class="lealbot-bot-button">
+    class="lealbot-bot-button"
+    aria-label="Cerrar chat con Lealbot">
+    <i class="pi pi-times"></i>
   </button>
 </div>
 
