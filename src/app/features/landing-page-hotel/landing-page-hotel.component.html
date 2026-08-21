@@ -1,0 +1,57 @@
+<!-- Hero & Navbar -->
+<app-hotel-hero-navbar
+  [navBarData]="facade.navBarData()"
+  [hasPromotions]="facade.hasPromotions()"
+  [showMobileMenu]="showMobileMenu"
+  (navigateSection)="scrollToSection($event)"
+  (toggleMobile)="showMobileMenu = !showMobileMenu"
+></app-hotel-hero-navbar>
+
+<main>
+  <!-- Acerca del Hotel -->
+  <app-hotel-about-section
+    [aboutData]="facade.aboutData()"
+  ></app-hotel-about-section>
+
+  <!-- Promociones -->
+  <app-hotel-promotions-carousel
+    [promotions]="facade.promotions()"
+    [hasPromotions]="facade.hasPromotions()"
+  ></app-hotel-promotions-carousel>
+
+  <!-- Menú & Servicios -->
+  <app-hotel-menu-section
+    [categoryNames]="facade.categoryNames()"
+    [selectedCategory]="facade.selectedCategory()"
+    [filteredProducts]="facade.filteredProducts()"
+    (selectCategory)="facade.selectCategory($event)"
+  ></app-hotel-menu-section>
+
+  <!-- Captura de Huésped / Formulario de Membresía -->
+  <app-hotel-capture-form
+    [isLoading]="facade.isLoadingForm()"
+    [successMessage]="facade.formSuccessMessage()"
+    [errorMessage]="facade.formErrorMessage()"
+    (formSubmitted)="onFormSubmit($event)"
+  ></app-hotel-capture-form>
+</main>
+
+<!-- Footer -->
+<app-hotel-footer
+  [footerData]="facade.footerData()"
+  [hotelName]="facade.navBarData().bussinessName"
+></app-hotel-footer>
+
+<!-- LealBot Virtual Concierge -->
+<app-lealbot [tenantId]="facade.tenantId() || 1"></app-lealbot>
+
+<!-- Back to Top Button -->
+<button
+  *ngIf="showBackToTop"
+  type="button"
+  class="btn-back-to-top"
+  (click)="scrollToTop()"
+  aria-label="Volver arriba"
+>
+  <i class="pi pi-arrow-up"></i>
+</button>
