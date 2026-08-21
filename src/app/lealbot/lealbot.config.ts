@@ -1,11 +1,12 @@
 /**
  * Configuración y Constantes para Lealbot
  */
+import { environment } from '../../environments/environment';
 
 export const LEALBOT_CONFIG = {
   // API Configuration
   API: {
-    BASE_URL: 'http://localhost:8080/api/chatbot',
+    BASE_URL: `${environment.apiUrl}/chatbot`,
     TIMEOUT: 10000, // milliseconds
     RETRY_ATTEMPTS: 3
   },

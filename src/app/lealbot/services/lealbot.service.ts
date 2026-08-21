@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 import {
   GenericResponse,
@@ -24,7 +25,7 @@ import {
   providedIn: 'root'
 })
 export class LealbotService {
-  private readonly BASE_URL = 'http://localhost:8080/api/chatbot';
+  private readonly BASE_URL = `${environment.apiUrl}/chatbot`;
   private readonly REQUEST_TIMEOUT = 30000; // 30 segundos
 
   constructor(private http: HttpClient) {}
