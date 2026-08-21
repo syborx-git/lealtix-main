@@ -19,12 +19,13 @@ import {
   OrderProduct,
   ChatMessage
 } from '../models/lealbot.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LealbotService {
-  private readonly BASE_URL = 'http://localhost:8080/api/chatbot';
+  private readonly BASE_URL = `${environment.apiUrl}/chatbot`;
   private readonly REQUEST_TIMEOUT = 30000; // 30 segundos
 
   constructor(private http: HttpClient) {}
