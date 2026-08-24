@@ -6,3 +6,98 @@ a {
 a:hover {
   color: inherit;
 }
+
+/* Premium footer */
+footer {
+  background: linear-gradient(180deg, #2C1E1A 0%, #1D130F 100%) !important;
+  position: relative;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C68B59, transparent);
+  opacity: 0.7;
+}
+
+/* Headings */
+footer h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+footer h3::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #C68B59, transparent);
+  margin-top: 0.5rem;
+}
+
+footer h4 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #E8C8A5;
+  margin-bottom: 0.25rem;
+}
+
+/* Contact content */
+footer .flex.flex-col.gap-3.flex-1 p,
+footer .flex.flex-col.gap-3.flex-1 a {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+footer .flex.flex-col.gap-3.flex-1 a {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+footer .flex.flex-col.gap-3.flex-1 a:hover {
+  color: #C68B59 !important;
+  transform: translateX(2px);
+}
+
+/* Schedule text */
+footer p.whitespace-pre-line {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 0.8rem !important;
+  border-left: 2px solid rgba(198, 139, 88, 0.4);
+  padding-left: 0.75rem;
+}
+
+/* Social icons */
+footer a[title] {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+footer a[title]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(198, 139, 88, 0.35);
+}
+
+/* Copyright */
+footer .border-t p {
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
