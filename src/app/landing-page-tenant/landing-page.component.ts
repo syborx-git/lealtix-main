@@ -64,11 +64,8 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
     this.renderer.addClass(document.body, 'crema-bg');
     const slug = this.route.snapshot.paramMap.get('slug');
 
-    if (slug === 'demo') {
-      // Datos dummy solo para /demo
-      this.loadDummyData();
-    } else if (slug) {
-      // Para cualquier otro slug, cargar datos del servicio
+    if (slug) {
+      // Cargar datos del tenant real por su slug
       this.tenantLandingPageService.getDatosPorSlug(slug).subscribe({
         next: (data: any) => {
           this.tenantId = data.object?.tenant?.id;
