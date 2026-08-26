@@ -10,7 +10,7 @@ COPY package*.json ./
 
 # Instalar dependencias
 ENV NODE_OPTIONS="--max-old-space-size=2048"
-RUN npm ci || npm install
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
 # Copiar el resto del código del proyecto
 COPY . .
