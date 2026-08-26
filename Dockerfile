@@ -9,7 +9,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm ci
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+RUN npm ci || npm install
 
 # Copiar el resto del código del proyecto
 COPY . .
