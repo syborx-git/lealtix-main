@@ -1,0 +1,385 @@
+<!-- Navigation -->
+<nav class="bg-hotel-surface/85 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-hotel-outline-variant/20">
+  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md max-w-[1280px] mx-auto w-full relative">
+    <!-- Logo -->
+    <div class="flex items-center gap-sm cursor-pointer" (click)="scrollToSection('header')">
+      <img
+        *ngIf="navBarData.logoUrl"
+        [src]="navBarData.logoUrl"
+        [alt]="navBarData.bussinessName + ' Logo'"
+        class="h-12 w-auto object-contain rounded-[6px]"
+      />
+      <span class="font-headline-md text-[20px] text-hotel-primary font-bold tracking-tight">{{ navBarData.bussinessName || 'Aurora Grand' }}</span>
+    </div>
+    
+    <!-- Desktop Links (only visible on desktop) -->
+    <div class="desktop-only nav-links">
+      <a class="text-hotel-on-surface font-label-md text-label-md hover:text-hotel-secondary transition-colors duration-300" href="#" (click)="scrollToSection('header', $event)">Inicio</a>
+      <a class="text-hotel-on-surface font-label-md text-label-md hover:text-hotel-secondary transition-colors duration-300" href="#" (click)="scrollToSection('#menu', $event)">Experiencias</a>
+      <a *ngIf="hasPromotions" class="text-hotel-on-surface font-label-md text-label-md hover:text-hotel-secondary transition-colors duration-300" href="#" (click)="scrollToSection('#promotions', $event)">Promociones</a>
+      <a class="text-hotel-on-surface font-label-md text-label-md hover:text-hotel-secondary transition-colors duration-300" href="#" (click)="scrollToSection('#rewards', $event)">Aurora Rewards</a>
+      <a class="text-hotel-on-surface font-label-md text-label-md hover:text-hotel-secondary transition-colors duration-300" href="#" (click)="scrollToSection('footer', $event)">Contacto</a>
+    </div>
+    
+    <!-- Desktop CTA Button -->
+    <button (click)="scrollToSection('#rewards')" class="bg-hotel-primary hover:bg-hotel-primary/95 text-hotel-on-primary font-label-md text-label-md px-[24px] py-[12px] rounded-[8px] smooth-hover desktop-only">
+      Reservar
+    </button>
+    
+    <!-- Mobile Toggle Button (only visible on mobile) -->
+    <button (click)="toggleMobileMenu()" class="mobile-only text-hotel-primary flex items-center justify-center p-1 rounded-[6px] hover:bg-hotel-surface-container">
+      <span class="material-symbols-outlined" style="font-size: 28px;">
+        {{ showMobileMenu ? 'close' : 'menu' }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Menu (only visible on mobile) -->
+  <div *ngIf="showMobileMenu" class="mobile-only mobile-dropdown bg-hotel-surface border-t border-hotel-outline-variant/20 px-[20px] py-[24px] flex flex-col gap-[16px] absolute top-full left-0 right-0 shadow-lg z-45">
+    <a class="text-hotel-on-surface font-label-md text-label-md py-1 border-b border-hotel-outline-variant/10" href="#" (click)="scrollToSection('header', $event)">Inicio</a>
+    <a class="text-hotel-on-surface font-label-md text-label-md py-1 border-b border-hotel-outline-variant/10" href="#" (click)="scrollToSection('#menu', $event)">Experiencias</a>
+    <a *ngIf="hasPromotions" class="text-hotel-on-surface font-label-md text-label-md py-1 border-b border-hotel-outline-variant/10" href="#" (click)="scrollToSection('#promotions', $event)">Promociones</a>
+    <a class="text-hotel-on-surface font-label-md text-label-md py-1 border-b border-hotel-outline-variant/10" href="#" (click)="scrollToSection('#rewards', $event)">Aurora Rewards</a>
+    <a class="text-hotel-on-surface font-label-md text-label-md py-1 border-b border-hotel-outline-variant/10" href="#" (click)="scrollToSection('footer', $event)">Contacto</a>
+    <button (click)="scrollToSection('#rewards')" class="w-full bg-hotel-primary text-hotel-on-primary font-label-md text-label-md py-[12px] rounded-[8px] mt-2">
+      Reservar
+    </button>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="relative w-full min-h-[80vh] flex flex-col items-center justify-center overflow-hidden py-xl">
+  <div class="absolute inset-0 z-0">
+    <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzDabPd66dT_hYW_WTvn8X8D6UuoMvCt8QNcdr-WbPta53FdkwiH_tfuUJcdX3aHvyrwtP6UP2W2EmsnP8-gOLODex53_9bt7WNVcLMIJw8HhWzgXMnenV8pmp0PpoHs3Ol1gsR-TyjTarb6lUwDDl-YIVvSy87PfZphGWAjcZWNI_ikn3RjLOrvLcBIu_199xE7w_IfBcBR3o09w5K9mpLfzokfHqXtrwdgyMza6aXFFgVajce4Lk')"></div>
+    <div class="absolute inset-0 bg-hotel-primary/40 mix-blend-multiply"></div>
+  </div>
+  
+  <div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto flex flex-col items-center">
+    <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-md drop-shadow-lg leading-tight">
+      {{ navBarData.since || 'Cada estancia merece una recompensa.' }}
+    </h1>
+    <p class="font-body-lg text-body-lg text-white/90 mb-lg max-w-2xl drop-shadow-md">
+      Disfruta del restaurante, cafetería, room service y promociones exclusivas mientras acumulas puntos en cada consumo.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-md justify-center w-full sm:w-auto mb-6">
+      <button (click)="scrollToSection('#menu')" class="bg-hotel-secondary hover:bg-hotel-secondary/95 text-hotel-on-secondary font-label-md text-label-md px-[32px] py-[16px] rounded-[8px] smooth-hover w-full sm:w-auto">
+        Explorar Servicios
+      </button>
+      <button (click)="scrollToSection('#rewards')" class="bg-transparent border border-white text-white hover:bg-white/10 font-label-md text-label-md px-[32px] py-[16px] rounded-[8px] smooth-hover w-full sm:w-auto backdrop-blur-sm">
+        Únete a Aurora Rewards
+      </button>
+    </div>
+  </div>
+
+  <!-- Misión y Visión (Hotel Style) -->
+  <div *ngIf="aboutData.story || aboutData.vision" class="relative z-10 w-full max-w-4xl mx-auto px-4 mt-8">
+    <div class="bg-white/5 backdrop-blur-md rounded-[12px] p-6 md:p-8 flex flex-col md:flex-row gap-6 border border-white/10 shadow-2xl">
+      <div class="md:w-1/2 text-left" *ngIf="aboutData.story">
+        <h3 class="text-hotel-secondary-fixed font-headline-md text-[20px] mb-2 font-bold tracking-tight">Misión</h3>
+        <p class="text-white/85 text-sm leading-relaxed" [innerHTML]="aboutData.story"></p>
+      </div>
+      <div class="md:w-1/2 text-left" *ngIf="aboutData.vision">
+        <h3 class="text-hotel-secondary-fixed font-headline-md text-[20px] mb-2 font-bold tracking-tight">Visión</h3>
+        <p class="text-white/85 text-sm leading-relaxed" [innerHTML]="aboutData.vision"></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Promociones Especiales (Bento Grid) -->
+<section id="promotions" class="max-w-[1280px] mx-auto w-full" *ngIf="hasPromotions">
+  <div class="mb-xl text-center">
+    <h2 class="font-headline-lg text-headline-lg text-hotel-primary mb-sm">Promociones Exclusivas</h2>
+    <p class="font-body-md text-body-md text-hotel-on-surface-variant max-w-2xl mx-auto">Ofertas diseñadas para elevar su experiencia gastronómica y de descanso.</p>
+  </div>
+  
+  <div class="bento-grid">
+    <!-- Promo 1: Large (Requires at least 1 promo) -->
+    <div *ngIf="promotions.length > 0" class="md:col-span-2 relative bg-hotel-surface-container-lowest rounded-[16px] overflow-hidden ambient-shadow smooth-hover group min-h-[400px] flex items-end">
+      <div class="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" [style.background-image]="'url(' + (promotions[0].imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80') + ')'"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-hotel-primary/90 via-hotel-primary/30 to-transparent"></div>
+      <div class="relative z-10 p-lg w-full">
+        <span class="inline-block bg-hotel-secondary text-hotel-on-secondary font-label-md text-label-md px-[12px] py-[6px] rounded-[4px] mb-md font-semibold">{{ promotions[0].tag }}</span>
+        <h3 class="font-headline-md text-headline-md text-white mb-sm">{{ promotions[0].title }}</h3>
+        <p class="font-body-md text-body-md text-white/80 mb-md max-w-md">{{ promotions[0].description }}</p>
+        <div class="text-hotel-secondary-fixed font-label-md text-label-md flex items-center gap-[8px] font-medium">
+          <span class="material-symbols-outlined text-[18px]">schedule</span>
+          <span>Válido hasta: {{ formatDate(promotions[0].endDate) }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Promo 2: Vertical (Requires at least 2 promos) -->
+    <div *ngIf="promotions.length > 1" class="relative bg-hotel-surface-container-lowest rounded-[16px] overflow-hidden ambient-shadow smooth-hover group min-h-[400px] flex items-end">
+      <div class="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" [style.background-image]="'url(' + (promotions[1].imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80') + ')'"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-hotel-primary/90 via-hotel-primary/40 to-transparent"></div>
+      <div class="relative z-10 p-md w-full">
+        <span class="inline-block bg-hotel-secondary text-hotel-on-secondary font-label-md text-label-md px-[12px] py-[6px] rounded-[4px] mb-sm font-semibold">{{ promotions[1].tag }}</span>
+        <h3 class="font-headline-md text-headline-md text-white mb-sm">{{ promotions[1].title }}</h3>
+        <p class="font-body-md text-body-md text-white/80 mb-md">{{ promotions[1].description }}</p>
+        <div class="text-hotel-secondary-fixed font-label-md text-label-md flex items-center gap-[8px] font-medium">
+          <span class="material-symbols-outlined text-[18px]">schedule</span>
+          <span>Válido hasta: {{ formatDate(promotions[1].endDate) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categorías de Servicios (Gastronomía Menu) -->
+<section id="menu" class="bg-hotel-surface-container-low w-full">
+  <div class="max-w-[1280px] mx-auto w-full">
+    <div class="mb-xl flex flex-col md:flex-row justify-between items-start md:items-end gap-lg">
+      <div class="max-w-2xl">
+        <h2 class="font-headline-lg text-headline-lg text-hotel-primary mb-sm">Nuestra Oferta Gastronómica</h2>
+        <p class="font-body-md text-body-md text-hotel-on-surface-variant">Descubra una curaduría de sabores en cada rincón del hotel, diseñados para satisfacer los paladares más exigentes a cualquier hora del día.</p>
+      </div>
+      <button (click)="scrollToSection('#rewards')" class="border border-hotel-primary text-hotel-primary font-label-md text-label-md px-[20px] py-[10px] rounded-[8px] hover:bg-hotel-primary hover:text-hotel-on-primary transition-colors whitespace-nowrap duration-300">
+        Unirse al Club
+      </button>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="tabs-container">
+      <button
+        *ngFor="let catName of getCategoryNames()"
+        (click)="selectCategory(catName)"
+        [ngClass]="{
+          'bg-hotel-secondary text-hotel-on-secondary font-semibold': selectedCategory === catName,
+          'bg-hotel-surface-container-lowest text-hotel-on-surface-variant hover:bg-hotel-surface-container-high': selectedCategory !== catName
+        }"
+        class="px-[24px] py-[10px] rounded-[30px] font-label-md text-label-md transition-colors shadow-sm duration-200 border border-hotel-outline-variant/10">
+        {{ catName }}
+      </button>
+    </div>
+
+    <!-- Dynamic Menu Grid -->
+    <div class="menu-grid">
+      <div *ngFor="let producto of getFilteredProducts()" class="bg-hotel-surface-container-lowest rounded-[16px] overflow-hidden ambient-shadow smooth-hover flex flex-col h-full group border border-hotel-outline-variant/10">
+        <div class="h-52 overflow-hidden relative bg-hotel-surface-container-high/40">
+          <img
+            [src]="producto.img"
+            [alt]="producto.prod"
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            onerror="this.style.opacity='0.15'; this.nextElementSibling.style.display='flex'"
+          />
+          <div class="absolute inset-0 hidden items-center justify-center text-hotel-primary/30">
+            <span class="material-symbols-outlined text-4xl">restaurant</span>
+          </div>
+        </div>
+        <div class="p-[20px] flex-grow flex flex-col justify-between">
+          <div class="mb-4">
+            <div class="flex items-center gap-[6px] mb-[8px] text-hotel-primary">
+              <span class="material-symbols-outlined text-[18px]">{{ getCategoryIcon(producto.categoriaName) }}</span>
+              <span class="font-label-md text-xs text-hotel-primary/80 uppercase tracking-widest font-semibold">{{ producto.categoriaName }}</span>
+            </div>
+            <h4 class="font-headline-md text-[22px] text-hotel-on-surface mb-[10px] leading-tight font-bold">{{ producto.prod }}</h4>
+            <p class="font-body-md text-sm text-hotel-on-surface-variant leading-relaxed">{{ producto.descProd }}</p>
+          </div>
+          <div class="flex justify-between items-center pt-[12px] border-t border-hotel-outline-variant/15 mt-auto">
+            <span class="text-hotel-secondary font-bold text-[20px]">{{ producto.precio }}</span>
+            <button (click)="lealbot.toggleChat(); lealbot.userInput = 'Quiero ordenar ' + producto.prod" class="bg-hotel-secondary hover:bg-hotel-primary text-white font-label-md text-xs px-[16px] py-[8px] rounded-[20px] smooth-hover font-semibold transition-all">
+              Ordenar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Aurora Rewards Registration -->
+<section id="rewards" class="max-w-[1280px] mx-auto w-full">
+  <div class="bg-hotel-primary rounded-[20px] overflow-hidden relative ambient-shadow flex flex-col md:flex-row border border-white/5">
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-hotel-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-hotel-surface-tint/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+    
+    <div class="p-lg md:p-xl md:w-1/2 flex flex-col justify-center relative z-10 text-hotel-on-primary">
+      <h2 class="font-headline-lg text-headline-lg mb-md">Únete a Aurora Rewards</h2>
+      <p class="font-body-lg text-body-lg text-hotel-on-primary/80 mb-lg leading-relaxed">Eleve su experiencia. Acumule puntos en cada consumo dentro del hotel y acceda a privilegios diseñados exclusivamente para usted.</p>
+      <ul class="space-y-sm mb-xl">
+        <li class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-hotel-secondary-fixed">check_circle</span>
+          <span class="font-body-md text-body-md text-hotel-on-primary/90">Acumula puntos en restaurante y room service</span>
+        </li>
+        <li class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-hotel-secondary-fixed">check_circle</span>
+          <span class="font-body-md text-body-md text-hotel-on-primary/90">Acceso anticipado a promociones de temporada</span>
+        </li>
+        <li class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-hotel-secondary-fixed">check_circle</span>
+          <span class="font-body-md text-body-md text-hotel-on-primary/90">Canje por experiencias y estancias gratuitas</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="p-lg md:p-xl md:w-1/2 relative z-10 bg-hotel-surface-container-lowest/5 backdrop-blur-sm border-t md:border-t-0 md:border-l border-white/10 flex items-center">
+      <div class="w-full max-w-md mx-auto bg-hotel-surface-container-lowest rounded-[16px] p-lg ambient-shadow border border-hotel-outline-variant/10">
+        <h3 class="font-headline-md text-headline-md text-hotel-primary mb-md text-center font-bold">Comience a sumar hoy</h3>
+        
+        <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="space-y-md">
+          <div>
+            <label class="block font-label-md text-label-md text-hotel-on-surface-variant mb-xs">Nombre Completo</label>
+            <input
+              formControlName="name"
+              class="w-full bg-hotel-surface border border-hotel-outline-variant/60 text-hotel-on-surface rounded-[8px] px-sm py-sm focus:border-hotel-secondary focus:ring-1 focus:ring-hotel-secondary outline-none transition-colors"
+              placeholder="Ej. Ana García"
+              type="text"
+            />
+            <div *ngIf="customerForm.get('name')?.invalid && customerForm.get('name')?.touched" class="text-red-500 text-xs mt-1">
+              <small *ngIf="customerForm.get('name')?.errors?.['required']">El nombre es obligatorio.</small>
+              <small *ngIf="customerForm.get('name')?.errors?.['pattern']">Ingrese un nombre válido.</small>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block font-label-md text-label-md text-hotel-on-surface-variant mb-xs">Correo Electrónico</label>
+            <input
+              formControlName="email"
+              class="w-full bg-hotel-surface border border-hotel-outline-variant/60 text-hotel-on-surface rounded-[8px] px-sm py-sm focus:border-hotel-secondary focus:ring-1 focus:ring-hotel-secondary outline-none transition-colors"
+              placeholder="ana@ejemplo.com"
+              type="email"
+            />
+            <div *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" class="text-red-500 text-xs mt-1">
+              <small *ngIf="customerForm.get('email')?.errors?.['required']">El correo es obligatorio.</small>
+              <small *ngIf="customerForm.get('email')?.errors?.['email']">Ingrese un correo válido.</small>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-sm">
+            <div>
+              <label class="block font-label-md text-label-md text-hotel-on-surface-variant mb-xs">Nacimiento</label>
+              <input
+                formControlName="birthDate"
+                class="w-full bg-hotel-surface border border-hotel-outline-variant/60 text-hotel-on-surface rounded-[8px] px-sm py-sm focus:border-hotel-secondary focus:ring-1 focus:ring-hotel-secondary outline-none transition-colors text-sm"
+                type="date"
+              />
+              <div *ngIf="customerForm.get('birthDate')?.invalid && customerForm.get('birthDate')?.touched" class="text-red-500 text-xs mt-1">
+                <small *ngIf="customerForm.get('birthDate')?.errors?.['required']">Requerido.</small>
+                <small *ngIf="customerForm.get('birthDate')?.errors?.['minAge']">Mínimo 13 años.</small>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block font-label-md text-label-md text-hotel-on-surface-variant mb-xs">Género</label>
+              <select
+                formControlName="gender"
+                class="w-full bg-hotel-surface border border-hotel-outline-variant/60 text-hotel-on-surface rounded-[8px] px-sm py-sm focus:border-hotel-secondary focus:ring-1 focus:ring-hotel-secondary outline-none transition-colors text-sm"
+              >
+                <option value="">Selecciona</option>
+                <option value="Male">Hombre</option>
+                <option value="Female">Mujer</option>
+                <option value="otro">Otro</option>
+              </select>
+              <div *ngIf="customerForm.get('gender')?.invalid && customerForm.get('gender')?.touched" class="text-red-500 text-xs mt-1">
+                <small *ngIf="customerForm.get('gender')?.errors?.['required']">Requerido.</small>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-label-md text-label-md text-hotel-on-surface-variant mb-xs">Teléfono (Opcional)</label>
+            <input
+              formControlName="phone"
+              class="w-full bg-hotel-surface border border-hotel-outline-variant/60 text-hotel-on-surface rounded-[8px] px-sm py-sm focus:border-hotel-secondary focus:ring-1 focus:ring-hotel-secondary outline-none transition-colors"
+              placeholder="5512345678"
+              type="tel"
+              maxlength="10"
+              (input)="onPhoneInput($event)"
+            />
+            <div *ngIf="customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched" class="text-red-500 text-xs mt-1">
+              <small *ngIf="customerForm.get('phone')?.errors?.['invalidPhone']">Debe ser de 10 dígitos.</small>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2 pt-1">
+            <input
+              formControlName="acceptedPromotions"
+              id="hotel-accept-promo"
+              type="checkbox"
+              class="mt-1 rounded border-hotel-outline-variant/60 text-hotel-secondary focus:ring-hotel-secondary"
+            />
+            <label for="hotel-accept-promo" class="font-caption text-caption text-hotel-on-surface-variant select-none cursor-pointer">
+              Acepto recibir promociones y los <a class="text-hotel-secondary font-bold hover:underline" href="#">Términos del servicio</a>.
+            </label>
+          </div>
+
+          <button
+            [disabled]="customerForm.invalid || isLoading"
+            class="w-full bg-hotel-secondary hover:bg-hotel-secondary/95 text-hotel-on-secondary font-label-md text-label-md py-md rounded-[8px] smooth-hover mt-sm flex items-center justify-center gap-2"
+            type="submit"
+          >
+            <span *ngIf="!isLoading">Crear Cuenta Gratis</span>
+            <div *ngIf="isLoading" class="spinner"></div>
+          </button>
+        </form>
+
+        <div *ngIf="successMessage" class="alert alert-success mt-3 text-green-600 p-3 bg-green-50 rounded-lg text-sm">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3 text-red-600 p-3 bg-red-50 rounded-lg text-sm">{{ errorMessage }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-hotel-primary text-white w-full relative grid grid-cols-1 md:grid-cols-4 gap-lg px-margin-mobile md:px-margin-desktop py-xl mt-auto border-t border-white/5">
+  <div class="col-span-1 md:col-span-1 flex flex-col gap-md">
+    <div class="flex items-center gap-sm cursor-pointer" (click)="scrollToSection('header')">
+      <img
+        *ngIf="navBarData.logoUrl"
+        [src]="navBarData.logoUrl"
+        [alt]="navBarData.bussinessName + ' Logo'"
+        class="h-12 w-auto object-contain rounded-[6px]"
+      />
+      <span class="font-headline-md text-[18px] text-white font-bold tracking-tight">{{ navBarData.bussinessName || 'Aurora Grand' }}</span>
+    </div>
+    <p class="font-caption text-caption text-hotel-on-primary/80 max-w-xs leading-relaxed">
+      © 2026 {{ navBarData.bussinessName || 'Hotel Aurora Grand' }}. Todos los derechos reservados.
+    </p>
+    <div class="text-xs text-white/60 space-y-2 mt-2" *ngIf="footerData.dir || footerData.tel">
+      <p class="flex items-start gap-1" *ngIf="footerData.dir">
+        <span class="material-symbols-outlined text-sm mt-0.5">location_on</span>
+        <span class="leading-normal">{{ footerData.dir }}</span>
+      </p>
+      <p class="flex items-center gap-1" *ngIf="footerData.tel">
+        <span class="material-symbols-outlined text-sm">phone</span>
+        <span>{{ footerData.tel }}</span>
+      </p>
+    </div>
+  </div>
+  
+  <div class="col-span-1 md:col-span-3 flex flex-col md:flex-row justify-end items-start md:items-center gap-lg md:gap-xl">
+    <div class="flex flex-col gap-sm">
+      <a class="font-label-md text-label-md text-hotel-on-primary/80 hover:text-hotel-secondary-fixed transition-colors" href="#">Privacidad</a>
+    </div>
+    <div class="flex flex-col gap-sm">
+      <a class="font-label-md text-label-md text-hotel-on-primary/80 hover:text-hotel-secondary-fixed transition-colors" href="#">Términos y Condiciones</a>
+    </div>
+    <div class="flex flex-col gap-sm">
+      <a class="font-label-md text-label-md text-hotel-on-primary/80 hover:text-hotel-secondary-fixed transition-colors" href="#">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<!-- FAB: Concierge IA (Custom FAB triggering chatbot) -->
+<button (click)="lealbot.toggleChat()" class="concierge-fab z-50 group">
+  <span class="material-symbols-outlined">support_agent</span>
+  <!-- Tooltip -->
+  <span class="concierge-tooltip">
+    Concierge IA
+  </span>
+</button>
+
+<!-- Back to Top Button -->
+<button
+  *ngIf="showBackToTop"
+  (click)="scrollToTop()"
+  class="fixed bottom-lg right-[96px] z-50 w-14 h-14 rounded-full bg-hotel-surface text-hotel-primary border border-hotel-outline-variant/30 shadow-lg hover:shadow-xl transition-all flex items-center justify-center smooth-hover"
+>
+  <span class="material-symbols-outlined">expand_less</span>
+</button>
+
+<!-- Lealbot chatbot -->
+<app-lealbot #lealbot [tenantId]="tenantId"></app-lealbot>

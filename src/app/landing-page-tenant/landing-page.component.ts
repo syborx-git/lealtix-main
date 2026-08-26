@@ -1,11 +1,11 @@
 import { Component, HostListener, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { AboutComponent } from './about/about.component';
 import { OfferComponent } from './offer/offer.component';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
+import { LealbotComponent } from '../lealbot/lealbot.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TenantLandingPageService } from '../services/tenant-landing-page.service';
 import { ProductsMenuService } from '../services/products-menu.service';
@@ -16,11 +16,11 @@ import { ProductsMenuService } from '../services/products-menu.service';
   imports: [
     CommonModule,
     NavBarComponent,
-    AboutComponent,
     OfferComponent,
     PromotionsComponent,
     MenuComponent,
-    FooterComponent
+    FooterComponent,
+    LealbotComponent
   ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']
@@ -61,7 +61,6 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
   showBackToTop = false;
 
   ngOnInit() {
-    debugger;
     this.renderer.addClass(document.body, 'crema-bg');
     const slug = this.route.snapshot.paramMap.get('slug');
 

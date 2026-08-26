@@ -23,6 +23,7 @@
               }
             ],
             "styles": [
+              "src/global-styles.css",
               "src/custom-theme.scss",
               "node_modules/primeicons/primeicons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -50,8 +51,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kB",
-                  "maximumError": "25kB"
+                  "maximumWarning": "30kB",
+                  "maximumError": "50kB"
                 }
               ]
             },
@@ -121,6 +122,7 @@
               }
             ],
             "styles": [
+              "src/global-styles.css",
               "src/styles.css"
             ]
           }
