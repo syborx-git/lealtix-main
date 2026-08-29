@@ -822,6 +822,7 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
         price: product.price || 0,
         imageUrl: product.imageUrl || '',
         categoryName: categoryName,
+        stock: product.stock,
         crossSellingProducts: product.crossSellingProducts || []
       });
     });
@@ -869,7 +870,8 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
     const maxToShow = 20;
     const productsToShow = category.products.slice(0, maxToShow);
     productsToShow.forEach((product, index) => {
-      this.sendBotMessage(`${index + 1}. ${product.name} - $${product.price}`);
+      const agotado = product.stock !== undefined && product.stock !== null && product.stock <= 0;
+      this.sendBotMessage(`${index + 1}. ${product.name} - $${product.price}${agotado ? ' ❌ (Agotado)' : ''}`);
     });
 
     if (category.products.length > maxToShow) {
@@ -964,8 +966,25 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   private addProductToCart(product: any): void {
+    // Validar stock disponible (dinámico: platillos con receta)
+    const available = product.stock !== undefined && product.stock !== null ? product.stock : null;
+    if (available !== null && available <= 0) {
+      this.sendBotMessage(`❌ Lo siento, ${product.name} está agotado en este momento.`);
+      this.currentQuickReplies = [
+        { label: '⬅️ Ver otro producto', value: 'browse_menu' },
+        { label: '🛒 Ver mi carrito', value: 'view_cart' }
+      ];
+      this.shouldScroll = true;
+      return;
+    }
+
     const existingItem = this.state.cart.find(item => item.productId === product.productId);
     if (existingItem) {
+      // No dejar agregar más de lo disponible
+      if (available !== null && existingItem.quantity + 1 > available) {
+        this.sendBotMessage(`⚠️ Solo hay ${available} disponible(s) de ${product.name}.`);
+        return;
+      }
       existingItem.quantity += 1;
       this.sendBotMessage(`✅ Agregué otro ${product.name} a tu carrito. Llevas ${existingItem.quantity}.`);
     } else {
@@ -1605,11 +1624,21 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       .subscribe({
         next: (response) => {
           this.state.isLoading = false;
-          if (response.object) {
+          const success = response?.code === 200 || response?.code === 201;
+          if (success && response.object) {
             this.conversationState = ConversationState.ORDER_CONFIRMED;
             this.sendBotMessage(LEALBOT_MESSAGES.ORDER_CONFIRMED.text(response.object.id));
             this.currentQuickReplies = LEALBOT_MESSAGES.ORDER_CONFIRMED.quick_reply || [];
             this.state.cart = []; // Limpiar carrito
+            this.shouldScroll = true;
+          } else {
+            // Error de negocio (ej. producto agotado): el backend responde HTTP 200 con code != 200
+            const msg = response?.message || 'No se pudo procesar tu pedido. Intenta de nuevo.';
+            this.sendBotMessage(`❌ ${msg}`);
+            this.currentQuickReplies = [
+              { label: '🛒 Ver mi carrito', value: 'view_cart' },
+              { label: '⬅️ Volver al menú', value: 'browse_menu' }
+            ];
             this.shouldScroll = true;
           }
         },
