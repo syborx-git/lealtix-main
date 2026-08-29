@@ -1,38 +1,66 @@
 .menu-grid-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.9rem 0.85rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: background-color 0.3s ease;
-  border-radius: 0.75rem;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 1rem;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .menu-grid-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(198, 139, 88, 0.06));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .menu-img-wrapper {
-  width: 60px;
-  height: 60px;
-  border-radius: 0.5rem;
+  width: 62px;
+  height: 62px;
+  border-radius: 0.85rem;
   overflow: hidden;
   flex-shrink: 0;
-  background-color: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(198, 139, 88, 0.12), rgba(255, 255, 255, 0.05));
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(198, 139, 88, 0.25);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.menu-grid-item:hover .menu-img-wrapper {
+  transform: scale(1.05);
+  border-color: rgba(198, 139, 88, 0.5);
+}
+
+.menu-grid-item h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #fff;
+  font-size: 1.05rem;
 }
 
 .menu-price-img-custom {
-  color: #c68b58;
-  font-weight: bold;
+  color: #C68B59;
+  font-weight: 700;
   margin-left: auto;
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   white-space: nowrap;
   flex-shrink: 0;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(198, 139, 88, 0.2);
+}
+
+/* Section title */
+#menu h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Category pills */
+#menu button {
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
 }
 
 /* Responsive typography */
@@ -43,8 +71,8 @@
   }
 
   .menu-img-wrapper {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
   }
 
   .menu-grid-item h4 {
@@ -70,4 +98,3 @@
     height: 55px;
   }
 }
-/* Removed old classes as they are not used with Tailwind CSS */

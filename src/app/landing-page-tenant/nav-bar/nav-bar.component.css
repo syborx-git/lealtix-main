@@ -1,6 +1,148 @@
 /* Glass effect nav styling */
 .glass-nav {
+  background: rgba(44, 30, 26, 0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(198, 139, 88, 0.12);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+nav:hover .glass-nav {
   background: rgba(44, 30, 26, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 24px rgba(198, 139, 88, 0.15);
+}
+
+/* Business name with subtle caramel gradient */
+.glass-nav h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, #ffffff 30%, #E8C8A5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Logo ring */
+.glass-nav img {
+  border: 2px solid rgba(198, 139, 88, 0.5);
+  box-shadow: 0 0 12px rgba(198, 139, 88, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-nav img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(198, 139, 88, 0.45);
+}
+
+/* Nav links with animated underline */
+.glass-nav nav a,
+nav .glass-nav a[href^='#'] {
+  position: relative;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+}
+
+nav .glass-nav a[href^='#']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #C68B59, #E8C8A5);
+  transition: width 0.3s ease;
+}
+
+nav .glass-nav a[href^='#']:hover::after {
+  width: 100%;
+}
+
+/* Ordenar button premium */
+nav .glass-nav button.bg-caramel {
+  background: linear-gradient(135deg, #D29A6B 0%, #C68B59 55%, #B07746 100%);
+  box-shadow: 0 4px 16px rgba(198, 139, 88, 0.35);
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+
+nav .glass-nav button.bg-caramel:hover {
+  box-shadow: 0 8px 24px rgba(198, 139, 88, 0.5);
+  transform: translateY(-1px);
+}
+
+
+/* Hero entrance animations */
+header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  animation: heroFade 0.9s ease both;
+}
+
+header h1 span {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffffff 0%, #F5E6D3 60%, #C68B59 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero background animated gradient overlay */
+header .absolute.inset-0 {
+  animation: heroZoom 18s ease-in-out infinite alternate;
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* Ver menú button */
+header .rounded-full {
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Misión / Visión glass cards */
+header .bg-white\/5 {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+header .bg-white\/5:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+
+header .bg-white\/5 h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: 0.02em;
+}
+
+header .bg-white\/5 h3::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #C68B59, transparent);
+  margin-top: 0.4rem;
 }
