@@ -58,6 +58,16 @@ export interface Product {
   comments?: string;
 }
 
+export interface IngredientOption {
+  insumoId: number;
+  insumoName: string;
+  cantidad?: number;
+  unidad?: string;
+  modificable?: boolean;
+  precio?: number;
+  tipoIngrediente?: 'BASE' | 'MODIFICABLE' | 'ADICIONAL';
+}
+
 export interface OrderProduct extends Product {
   quantity: number;
 }
@@ -69,6 +79,9 @@ export interface CartItem {
   imageUrl?: string;
   quantity: number;
   comments?: string;
+  excludedIngredientIds?: number[];
+  additionalIngredientIds?: number[];
+  configKey?: string;
 }
 
 // ============ COUPONS ============
@@ -180,6 +193,8 @@ export interface OrderItem {
   cantidad: number;
   precioUnitario: number;
   comentarios?: string;
+  excludedIngredientIds?: number[];
+  additionalIngredientIds?: number[];
 }
 
 export interface CreateOrderRequest {
