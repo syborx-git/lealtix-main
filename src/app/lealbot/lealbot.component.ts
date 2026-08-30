@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -47,6 +48,7 @@ import { LEALBOT_MESSAGES, MESSAGE_HELPERS } from './lealbot-messages';
     FormsModule,
     HttpClientModule,
     ButtonModule,
+    CheckboxModule,
     IconFieldModule,
     InputIconModule,
     InputTextModule,
@@ -100,6 +102,14 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
   // Menú de productos
   menuCategories: { name: string; products: any[] }[] = [];
   selectedCategory: string | null = null;
+
+  // Configuración de ingredientes del último producto seleccionado
+  ingredientConfigVisible = false;
+  configProduct: any = null;
+  configModificables: any[] = [];
+  configAdicionales: any[] = [];
+  configExcludedIds: Set<number> = new Set();
+  configAdditionalIds: Set<number> = new Set();
 
   // Cleanup
   private destroy$ = new Subject<void>();
@@ -823,7 +833,9 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
         imageUrl: product.imageUrl || '',
         categoryName: categoryName,
         stock: product.stock,
-        crossSellingProducts: product.crossSellingProducts || []
+        crossSellingProducts: product.crossSellingProducts || [],
+        recipes: product.recipes || [],
+        additionals: product.additionals || []
       });
     });
 
@@ -978,7 +990,82 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       return;
     }
 
-    const existingItem = this.state.cart.find(item => item.productId === product.productId);
+    const modificables = (product.recipes || []).filter((r: any) => r.modificable);
+    const adicionales = product.additionals || [];
+
+    if (modificables.length > 0 || adicionales.length > 0) {
+      this.openIngredientConfig(product, modificables, adicionales);
+      return;
+    }
+
+    this.appendToCart(product, [], [], 0);
+  }
+
+  private openIngredientConfig(
+    product: any,
+    modificables: any[],
+    adicionales: any[]
+  ): void {
+    this.configProduct = product;
+    this.configModificables = modificables;
+    this.configAdicionales = adicionales;
+    // Por defecto los modificables vienen incluidos; el cliente desmarca lo que no quiere
+    this.configExcludedIds = new Set();
+    this.configAdditionalIds = new Set();
+    this.ingredientConfigVisible = true;
+    this.shouldScroll = true;
+  }
+
+  isExcluded(insumoId: number): boolean {
+    return this.configExcludedIds.has(insumoId);
+  }
+
+  toggleExcluded(insumoId: number, excluded: boolean): void {
+    if (excluded) {
+      this.configExcludedIds.add(insumoId);
+    } else {
+      this.configExcludedIds.delete(insumoId);
+    }
+  }
+
+  isAdditional(insumoId: number): boolean {
+    return this.configAdditionalIds.has(insumoId);
+  }
+
+  toggleAdditional(insumoId: number, selected: boolean): void {
+    if (selected) {
+      this.configAdditionalIds.add(insumoId);
+    } else {
+      this.configAdditionalIds.delete(insumoId);
+    }
+  }
+
+  confirmIngredientConfig(): void {
+    if (!this.configProduct) return;
+    const product = this.configProduct;
+
+    const excludedIds: number[] = Array.from(this.configExcludedIds);
+    const additionalIds: number[] = Array.from(this.configAdditionalIds);
+
+    // Sumar el precio de los adicionales seleccionados
+    const extra = this.configAdicionales
+      .filter(a => this.configAdditionalIds.has(a.insumoId))
+      .reduce((sum, a) => sum + (Number(a.precio) || 0), 0);
+
+    this.ingredientConfigVisible = false;
+    this.appendToCart(product, excludedIds, additionalIds, extra);
+  }
+
+  private appendToCart(product: any, excludedIds: number[], additionalIds: number[], extraPrice: number): void {
+    const unitPrice = (Number(product.price) || 0) + extraPrice;
+    const configKey = JSON.stringify([excludedIds.sort(), additionalIds.sort()]);
+
+    const existingItem = this.state.cart.find(
+      item => item.productId === product.productId && item.configKey === configKey
+    );
+
+    // No dejar agregar más de lo disponible
+    const available = product.stock !== undefined && product.stock !== null ? product.stock : null;
     if (existingItem) {
       // No dejar agregar más de lo disponible
       if (available !== null && existingItem.quantity + 1 > available) {
@@ -991,12 +1078,20 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.state.cart.push({
         productId: product.productId,
         productName: product.name,
-        price: product.price,
+        price: unitPrice,
         imageUrl: product.imageUrl,
         quantity: 1,
-        comments: ''
+        comments: '',
+        excludedIngredientIds: excludedIds,
+        additionalIngredientIds: additionalIds,
+        configKey
       });
-      this.sendBotMessage(`✅ Agregué ${product.name} ($${product.price}) a tu carrito.`);
+
+      if (additionalIds.length > 0) {
+        this.sendBotMessage(`✅ Agregué ${product.name} a tu carrito por $${unitPrice.toFixed(2)} (incluye adicionales).`);
+      } else {
+        this.sendBotMessage(`✅ Agregué ${product.name} ($${unitPrice.toFixed(2)}) a tu carrito.`);
+      }
     }
 
     // Actualizar totales del carrito
@@ -1599,7 +1694,9 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       productId: item.productId,
       cantidad: item.quantity,
       precioUnitario: item.price,
-      comentarios: item.comments
+      comentarios: item.comments,
+      excludedIngredientIds: item.excludedIngredientIds || [],
+      additionalIngredientIds: item.additionalIngredientIds || []
     }));
 
     const request: CreateOrderRequest = {
