@@ -20,7 +20,6 @@ import {
   OrderProduct,
   ChatMessage
 } from '../models/lealbot.models';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
