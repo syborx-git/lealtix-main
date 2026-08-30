@@ -1,0 +1,79 @@
+<!-- Navbar -->
+<app-registro-navbar></app-registro-navbar>
+
+<!-- Loading Screen -->
+<div *ngIf="facade.loading()" class="loading-screen">
+  <div class="loading-content">
+    <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration="1s"></p-progressSpinner>
+    <h3 class="loading-title">Validando invitación...</h3>
+    <p class="loading-subtitle">Por favor espera un momento</p>
+  </div>
+</div>
+
+<!-- Registro con Stepper -->
+<section class="registration-section" *ngIf="!facade.loading()">
+  <div class="registration-container">
+    <div class="registration-card">
+
+      <!-- Header del formulario -->
+      <div class="registration-header">
+        <div class="brand-section">
+          <div>
+            <h2 class="brand-title">Bienvenido a Lealtix</h2>
+            <p class="brand-subtitle">Completa tu registro para comenzar</p>
+          </div>
+        </div>
+      </div>
+      <app-confetti></app-confetti>
+
+      <!-- Stepper -->
+      <div class="stepper-container">
+        <!-- Navigation Header -->
+        <app-registro-stepper-header
+          [stepItems]="facade.stepItems"
+          [activeStep]="facade.activeStep()"
+          [paymentConfirmed]="facade.paymentConfirmed()"
+          (stepSelected)="facade.goToStep($event)"
+        ></app-registro-stepper-header>
+
+        <!-- Step 1: Información Personal -->
+        <app-step-personal-info
+          *ngIf="facade.activeStep() === 0"
+          [formGroup]="facade.registroForm"
+          [showPassword]="facade.showPassword()"
+          [isValidating]="facade.isValidating()"
+          (togglePassword)="facade.togglePasswordVisibility()"
+          (continue)="onNextStep()"
+        ></app-step-personal-info>
+
+        <!-- Step 2: Método de Pago -->
+        <app-step-payment-stripe
+          *ngIf="facade.activeStep() === 1"
+          [paymentElementLoading]="facade.paymentElementLoading()"
+          [paymentError]="facade.paymentError()"
+          [paymentErrorDetails]="facade.paymentErrorDetails()"
+          [showErrorDetails]="facade.showErrorDetails()"
+          [paymentFailed]="facade.paymentFailed()"
+          [paymentConfirmed]="facade.paymentConfirmed()"
+          [stripeInitialized]="facade.stripeInitialized()"
+          [isProcessingPayment]="facade.isProcessingPayment()"
+          [retryInProgress]="facade.retryInProgress()"
+          (back)="facade.previousStep()"
+          (pay)="facade.processPayment()"
+          (retry)="facade.retryPayment()"
+          (toggleDetails)="facade.toggleErrorDetails()"
+        ></app-step-payment-stripe>
+
+        <!-- Step 3: Confirmación -->
+        <app-step-confirmation
+          *ngIf="facade.activeStep() === 2"
+          [fullName]="facade.tenantGroup.get('fullName')?.value || ''"
+          [email]="facade.tenantGroup.get('email')?.value || ''"
+        ></app-step-confirmation>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<app-registro-footer></app-registro-footer>

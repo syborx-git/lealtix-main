@@ -1,7 +1,5 @@
 export const environment = {
   production: true,
-  // Production API URL - replace with the real production endpoint
-  apiUrl: 'https://chip-elegant-obtain-kids.trycloudflare.com/api',
-  // Use your real Stripe publishable key for production
-  stripePublishableKey: 'pk_live_REPLACE_WITH_YOUR_PROD_KEY'
+  apiUrl: 'http://5.161.82.24:8082/api',
+  stripePublishableKey: 'pk_test_51S88J5F30XYgfrgVDNixlIFUVK9HphUlvSTFcG6IuoAheSQL2NBY95v9Zqy8xUY4WdREAJwOUW3FP3QmgsYwCq9400y8Ov9b6x'
 };

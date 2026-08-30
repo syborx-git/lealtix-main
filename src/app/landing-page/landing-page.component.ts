@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { SubscriptionService } from '../services/subscription.service';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { RouterModule } from '@angular/router';
 
@@ -15,7 +15,10 @@ export class LandingPageComponent {
   suscripcionForm: FormGroup;
   loading = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private subscriptionService: SubscriptionService
+  ) {
     this.suscripcionForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -31,28 +34,19 @@ export class LandingPageComponent {
     this.loading = true;
     const { nombre, email } = this.suscripcionForm.value;
 
-    this.http
-      .post<{ success: boolean; message: string }>('http://localhost:3000/api/suscripcion', {
-        nombre,
-        email,
-      })
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            alert(
-              'Gracias por suscribirte a Lealtix 🎉, te enviamos un correo para continuar tu registro.'
-            );
-            this.suscripcionForm.reset();
-          } else {
-            alert(res.message || 'El correo ya está registrado.');
-          }
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error en la suscripción:', err);
-          alert('Hubo un problema con la suscripción, intenta más tarde.');
-          this.loading = false;
-        },
-      });
+    this.subscriptionService.preSubscribe({ nombre, email }).subscribe({
+      next: (res: any) => {
+        alert('Gracias por suscribirte a Lealtix 🎉, te enviamos un correo para continuar tu registro.');
+        this.suscripcionForm.reset();
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error('Error en la suscripción:', err);
+        const msg = err?.error?.message || 'Hubo un problema con la suscripción o el correo ya está registrado.';
+        alert(msg);
+        this.loading = false;
+      },
+    });
   }
 }
+

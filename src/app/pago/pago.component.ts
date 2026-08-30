@@ -5,6 +5,8 @@ import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { PaymentService } from '../services/payment.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-pago',
   standalone: true,
@@ -36,7 +38,7 @@ export class PagoComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.stripe = await loadStripe('pk_test_51S88J5F30XYgfrgVDNixlIFUVK9HphUlvSTFcG6IuoAheSQL2NBY95v9Zqy8xUY4WdREAJwOUW3FP3QmgsYwCq9400y8Ov9b6x'); // tu clave pública
+    this.stripe = await loadStripe(environment.stripePublishableKey);
   }
 
   async pagar() {

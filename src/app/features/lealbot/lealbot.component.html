@@ -1,0 +1,72 @@
+<!-- Botón flotante para abrir chat -->
+<button
+  *ngIf="!facade.isOpen()"
+  type="button"
+  class="lealbot-floating-btn"
+  (click)="onToggle()"
+  aria-label="Abrir Asistente LealBot"
+>
+  <i class="pi pi-comments chat-bubble-icon"></i>
+  <span *ngIf="facade.cart().length > 0" class="floating-cart-badge">
+    {{ facade.cart().length }}
+  </span>
+</button>
+
+<!-- Ventana del Chat LealBot -->
+<div *ngIf="facade.isOpen()" class="lealbot-window-container">
+  <div class="lealbot-card">
+
+    <!-- Header -->
+    <app-lealbot-header
+      [cartCount]="facade.cart().length"
+      (openCart)="isCartOpen = true"
+      (closeChat)="onToggle()"
+    ></app-lealbot-header>
+
+    <!-- Messages List -->
+    <app-lealbot-messages-list
+      #messagesList
+      [messages]="facade.messages()"
+      [isLoading]="facade.isLoading()"
+    ></app-lealbot-messages-list>
+
+    <!-- Quick Replies / Chips -->
+    <app-lealbot-quick-replies
+      [quickReplies]="facade.quickReplies()"
+      (chipSelected)="onSelectQuickReply($event)"
+    ></app-lealbot-quick-replies>
+
+    <!-- Input Bar -->
+    <app-lealbot-input-bar
+      [inputType]="facade.inputType()"
+      [placeholder]="facade.inputPlaceholder()"
+      [isLoading]="facade.isLoading()"
+      (send)="onSendMessage($event)"
+    ></app-lealbot-input-bar>
+
+    <!-- Cart Drawer Modal -->
+    <app-lealbot-cart-drawer
+      [isOpen]="isCartOpen"
+      [cart]="facade.cart()"
+      [subtotal]="facade.subtotal()"
+      [discount]="facade.discount()"
+      [total]="facade.total()"
+      [appliedCoupon]="facade.appliedCoupon()"
+      (close)="isCartOpen = false"
+      (addItem)="facade.addToCart($event)"
+      (removeItem)="facade.removeFromCart($event)"
+      (checkout)="onCheckout()"
+    ></app-lealbot-cart-drawer>
+
+    <!-- Menu Catalog Modal -->
+    <app-lealbot-menu-catalog
+      [isOpen]="isCatalogOpen"
+      [categories]="facade.menuCategories()"
+      [selectedCategory]="facade.selectedCategory()"
+      (close)="isCatalogOpen = false"
+      (selectCategory)="facade.selectCategory($event)"
+      (addProduct)="onAddProduct($event)"
+    ></app-lealbot-menu-catalog>
+
+  </div>
+</div>
