@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 import {
   GenericResponse,
@@ -19,7 +20,6 @@ import {
   OrderProduct,
   ChatMessage
 } from '../models/lealbot.models';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

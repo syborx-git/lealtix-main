@@ -102,6 +102,49 @@
     </div>
   </div>
 
+  <!-- Panel de configuración de ingredientes -->
+  <div *ngIf="ingredientConfigVisible && configProduct" class="lealbot-ingredient-config">
+    <div class="igc-header">
+      <span class="igc-title">⚙️ Configura tu {{ configProduct.name }}</span>
+    </div>
+
+    <ng-container *ngIf="configModificables.length > 0">
+      <div class="igc-section">
+        <span class="igc-section-title">🔧 Modificables</span>
+        <span class="igc-section-hint">Desmarca lo que NO quieras</span>
+        <label class="igc-item" *ngFor="let m of configModificables">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="!isExcluded(m.insumoId)"
+            (ngModelChange)="toggleExcluded(m.insumoId, !$event)">
+          </p-checkbox>
+          <span class="igc-item-name">{{ m.insumoName }}</span>
+          <span class="igc-item-extra" *ngIf="m.unidad">(×{{ m.cantidad }} {{ m.unidad }})</span>
+        </label>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="configAdicionales.length > 0">
+      <div class="igc-section">
+        <span class="igc-section-title">➕ Adicionales</span>
+        <span class="igc-section-hint">Marca los que quieras agregar</span>
+        <label class="igc-item" *ngFor="let a of configAdicionales">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="isAdditional(a.insumoId)"
+            (ngModelChange)="toggleAdditional(a.insumoId, $event)">
+          </p-checkbox>
+          <span class="igc-item-name">{{ a.insumoName }}</span>
+          <span class="igc-item-extra">(+${{ a.precio || 0 }})</span>
+        </label>
+      </div>
+    </ng-container>
+
+    <button type="button" pButton label="✓ Agregar al carrito" class="igc-confirm"
+      [disabled]="state.isLoading" (click)="confirmIngredientConfig()">
+    </button>
+  </div>
+
   <!-- Respuestas Rápidas (Chips) -->
   <div *ngIf="currentQuickReplies.length > 0" class="lealbot-quick-replies">
     <button

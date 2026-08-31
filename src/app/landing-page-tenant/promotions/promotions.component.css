@@ -1,8 +1,54 @@
+/* Premium promo cards */
 .promo-card {
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  background: linear-gradient(160deg, #FFFFFF 0%, #F9F6F2 100%);
+  border: 1px solid rgba(198, 139, 88, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #C68B59, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .promo-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 25px -5px rgba(44, 30, 26, 0.1), 0 10px 10px -5px rgba(44, 30, 26, 0.04);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(44, 30, 26, 0.14);
+  border-color: rgba(198, 139, 88, 0.3);
+}
+
+.promo-card:hover::before {
+  opacity: 1;
+}
+
+.promo-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Badge */
+.promo-card .bg-caramel {
+  background: linear-gradient(135deg, #D29A6B, #B07746) !important;
+  box-shadow: 0 4px 12px rgba(198, 139, 88, 0.3);
+}
+
+/* Image */
+.promo-card img {
+  transition: transform 0.4s ease;
+}
+
+.promo-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Section title */
+#promotions h2 {
+  font-family: 'Playfair Display', Georgia, serif;
 }

@@ -13,6 +13,72 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Premium registration card */
+section#rewards .bg-white {
+  border: 1px solid rgba(198, 139, 88, 0.15) !important;
+  box-shadow: 0 30px 70px rgba(44, 30, 26, 0.12) !important;
+}
+
+/* Espresso panel with gradient border */
+section#rewards .bg-espresso {
+  position: relative;
+  background: linear-gradient(160deg, #3A2A24 0%, #2C1E1A 60%, #241815 100%) !important;
+}
+
+section#rewards .bg-espresso::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 0% 0%, rgba(198, 139, 88, 0.18), transparent 60%);
+  pointer-events: none;
+}
+
+section#rewards .bg-espresso h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+section#rewards .bg-espresso ul li {
+  transition: transform 0.2s ease;
+}
+
+section#rewards .bg-espresso ul li:hover {
+  transform: translateX(3px);
+}
+
+/* Inputs premium */
+section#rewards input,
+section#rewards select {
+  background-color: #FDF8F1;
+  border: 1px solid rgba(44, 30, 26, 0.08);
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+section#rewards input:focus,
+section#rewards select:focus {
+  border-color: #C68B59;
+  box-shadow: 0 0 0 4px rgba(198, 139, 88, 0.15);
+  background-color: #fff;
+}
+
+/* Submit button premium */
+section#rewards button[type='submit'] {
+  background: linear-gradient(135deg, #D29A6B 0%, #C68B59 50%, #B07746 100%);
+  border-radius: 0.9rem;
+  letter-spacing: 0.03em;
+  transition: all 0.3s ease;
+}
+
+section#rewards button[type='submit']:hover:not(:disabled) {
+  box-shadow: 0 12px 32px rgba(198, 139, 88, 0.4);
+  transform: translateY(-2px);
+}
+
+section#rewards button[type='submit']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Responsive form layout - mobile first */
 @media (max-width: 640px) {
   form {
@@ -21,7 +87,6 @@
 }
 
 @media (max-width: 768px) {
-  /* Single column layout for tablets and smaller */
   form > div:not(.sm\:col-span-2) {
     flex-basis: 100%;
   }
