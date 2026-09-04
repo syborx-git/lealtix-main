@@ -1,5 +1,5 @@
 <!-- Botón Flotante -->
-<div class="lealbot-floating-container" *ngIf="!state.isOpen">
+<div class="lealbot-floating-container" data-drag *ngIf="!state.isOpen">
   <div class="lealbot-message-bubble-floating">
     <span class="lealbot-message-text">
       <span class="text-label">¡Ordena aquí!</span>
@@ -17,17 +17,8 @@
   </div>
 </div>
 
-<div class="lealbot-floating-button-open" *ngIf="state.isOpen" (click)="toggleChat()">
-  <button
-    type="button"
-    class="lealbot-bot-button"
-    aria-label="Cerrar chat con Lealbot">
-    <i class="pi pi-times"></i>
-  </button>
-</div>
-
 <!-- Ventana de Chat -->
-<div class="lealbot-chat-window" [ngClass]="{'lealbot-open': state.isOpen}" *ngIf="state.isOpen">
+<div class="lealbot-chat-window" data-drag [ngClass]="{'lealbot-open': state.isOpen}" *ngIf="state.isOpen">
   <!-- Header -->
   <div class="lealbot-header">
     <div class="lealbot-header-content">
