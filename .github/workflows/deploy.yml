@@ -22,5 +22,5 @@ jobs:
             git checkout $BRANCH
             git pull origin $BRANCH
             cd /var/www/lealtix
-            docker compose up -d --build lealtix-main
+            docker compose build --no-cache lealtix-main && docker compose up -d lealtix-main
             echo "✅ Main Web actualizado con éxito!"
