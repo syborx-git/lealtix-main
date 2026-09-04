@@ -114,6 +114,22 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
   // Cleanup
   private destroy$ = new Subject<void>();
 
+  // ===== Arrastre libre del chatbot (mover con el mouse) =====
+  private dragElement: HTMLElement | null = null;
+  private dragDownX = 0;
+  private dragDownY = 0;
+  private dragOffsetX = 0;
+  private dragOffsetY = 0;
+  private dragMoved = false;
+  private dragShouldBlockClick = false;
+  // Posición elegida por el usuario (px desde arriba/izquierda). -1 = usar la posición CSS por defecto.
+  private posChatX = -1;
+  private posChatY = -1;
+  private readonly boundPointerDown = this.onChatPointerDown.bind(this);
+  private readonly boundPointerMove = this.onChatPointerMove.bind(this);
+  private readonly boundPointerUp = this.onChatPointerUp.bind(this);
+  private readonly boundBlockClick = this.onChatBlockClick.bind(this);
+
   constructor(
     private lealbotService: LealbotService,
     private productsMenuService: ProductsMenuService
@@ -122,6 +138,7 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
   ngOnInit(): void {
     this.initializeSession();
     this.loadMenu();
+    this.enableFreeDrag();
   }
 
   ngAfterViewChecked(): void {
@@ -137,6 +154,139 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
     this.destroy$.next();
     this.destroy$.complete();
+    this.disableFreeDrag();
+  }
+
+  /**
+   * ====== ARRASTRE LIBRE DEL CHATBOT ======
+   * Los contenedores marcados con [data-drag] en el HTML pueden moverse a
+   * cualquier parte de la ventana arrastrándolos con el mouse.
+   */
+  private enableFreeDrag(): void {
+    document.addEventListener('pointerdown', this.boundPointerDown, true);
+  }
+
+  private disableFreeDrag(): void {
+    document.removeEventListener('pointerdown', this.boundPointerDown, true);
+    this.finishChatDrag();
+  }
+
+  private onChatPointerDown(ev: PointerEvent): void {
+    const target = ev.target as HTMLElement | null;
+    if (!target || typeof target.closest !== 'function') {
+      return;
+    }
+    // Solo elementos marcados como arrastrables
+    const contenedor = target.closest('[data-drag]') as HTMLElement | null;
+    if (!contenedor) {
+      return;
+    }
+    // NO iniciar el arrastre desde zonas donde se escribe o se hace scroll.
+    // Nota: NO llamamos preventDefault aquí, para que un clic simple siempre
+    // dispare su evento click (abrir/cerrar chat) sin problemas.
+    if (target.closest(
+      'input, textarea, select, .lealbot-messages, .lealbot-quick-replies, ' +
+      '.lealbot-ingredient-config'
+    )) {
+      return;
+    }
+    if (ev.button !== 0) { // solo botón izquierdo
+      return;
+    }
+
+    const rect = contenedor.getBoundingClientRect();
+    this.dragElement = contenedor;
+    this.dragDownX = ev.clientX;
+    this.dragDownY = ev.clientY;
+    this.dragOffsetX = ev.clientX - rect.left;
+    this.dragOffsetY = ev.clientY - rect.top;
+    this.dragMoved = false;
+    this.dragShouldBlockClick = false;
+    contenedor.classList.add('lealbot-dragging');
+
+    document.addEventListener('pointermove', this.boundPointerMove, true);
+    document.addEventListener('pointerup', this.boundPointerUp, true);
+    document.addEventListener('click', this.boundBlockClick, true);
+  }
+
+  private onChatPointerMove(ev: PointerEvent): void {
+    const contenedor = this.dragElement;
+    if (!contenedor) {
+      return;
+    }
+    const dx = ev.clientX - this.dragDownX;
+    const dy = ev.clientY - this.dragDownY;
+    if (!this.dragMoved) {
+      if (Math.abs(dx) < 4 && Math.abs(dy) < 4) {
+        return; // todavía no hay movimiento: se tratará como un clic
+      }
+      this.dragMoved = true;
+      document.body.classList.add('lealbot-grabbing');
+    }
+    // Solo a partir de aquí evitamos comportamientos por defecto (selección/scroll)
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
+
+    const maxX = Math.max(0, window.innerWidth - contenedor.offsetWidth - 8);
+    const maxY = Math.max(0, window.innerHeight - contenedor.offsetHeight - 8);
+    const x = Math.min(Math.max(0, ev.clientX - this.dragOffsetX), maxX);
+    const y = Math.min(Math.max(0, ev.clientY - this.dragOffsetY), maxY);
+
+    // Convertir de bottom/right (fijo) a top/left (libre)
+    contenedor.style.right = 'auto';
+    contenedor.style.bottom = 'auto';
+    contenedor.style.left = x + 'px';
+    contenedor.style.top = y + 'px';
+
+    // Guardar la posición elegida para que se mantenga al abrir/cerrar el chat
+    this.posChatX = x;
+    this.posChatY = y;
+  }
+
+  private onChatPointerUp(ev: PointerEvent): void {
+    this.dragShouldBlockClick = this.dragMoved;
+    this.endChatDrag(); // quita move/up; el bloqueo de click se quita después del click
+  }
+
+  private onChatBlockClick(ev: Event): void {
+    // Si hubo arrastre real, cancelar el click que generaría (abrir/cerrar chat).
+    if (this.dragShouldBlockClick) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      this.dragShouldBlockClick = false;
+      document.removeEventListener('click', this.boundBlockClick, true);
+    }
+  }
+
+  private endChatDrag(): void {
+    document.removeEventListener('pointermove', this.boundPointerMove, true);
+    document.removeEventListener('pointerup', this.boundPointerUp, true);
+    if (this.dragElement) {
+      this.dragElement.classList.remove('lealbot-dragging');
+      this.dragElement = null;
+    }
+    document.body.classList.remove('lealbot-grabbing');
+    // El click del navegador llega justo después del pointerup. Dejamos el
+    // bloqueador activo un instante más; si no hubo click, se limpia solo.
+    window.setTimeout(() => {
+      if (this.dragShouldBlockClick) {
+        this.dragShouldBlockClick = false;
+        document.removeEventListener('click', this.boundBlockClick, true);
+      }
+    }, 200);
+  }
+
+  private finishChatDrag(): void {
+    this.dragShouldBlockClick = false;
+    document.removeEventListener('pointermove', this.boundPointerMove, true);
+    document.removeEventListener('pointerup', this.boundPointerUp, true);
+    document.removeEventListener('click', this.boundBlockClick, true);
+    if (this.dragElement) {
+      this.dragElement.classList.remove('lealbot-dragging');
+      this.dragElement = null;
+    }
+    document.body.classList.remove('lealbot-grabbing');
   }
 
   /**
@@ -156,6 +306,48 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.currentQuickReplies = LEALBOT_MESSAGES.GREETING_INITIAL.quick_reply || [];
     }
     this.shouldScroll = true;
+    // Cuando cambia el estado (abrir/cerrar), se "acopla" la posición elegida
+    // (con margen de tiempo para que el elemento ya esté medible en pantalla).
+    setTimeout(() => this.aplicarPosicionGuardada(), 60);
+  }
+
+  /**
+   * Aplica la posición elegida por el usuario a los elementos del chatbot
+   * (botón cerrado y ventana). Antes de aplicar se "acopla" cada elemento a la
+   * ventana del navegador: nunca queda parcialmente fuera de la pantalla.
+   */
+  private aplicarPosicionGuardada(): void {
+    if (this.posChatX < 0 || this.posChatY < 0) {
+      return; // todavía no se ha arrastrado: se usa la posición CSS por defecto
+    }
+    const selectores = '.lealbot-floating-container, .lealbot-chat-window';
+    document.querySelectorAll(selectores).forEach(el => {
+      const nodo = el as HTMLElement;
+      if (!nodo || typeof nodo.style === 'undefined' || !nodo.offsetWidth) {
+        return;
+      }
+      const punto = this.puntoAcoplado(nodo);
+      nodo.style.right = 'auto';
+      nodo.style.bottom = 'auto';
+      nodo.style.left = punto.x + 'px';
+      nodo.style.top = punto.y + 'px';
+    });
+  }
+
+  /**
+   * Ajusta una posición (top-left) para que el elemento quepa COMPLETO dentro
+   * del área visible de la página.
+   */
+  private puntoAcoplado(nodo: HTMLElement): { x: number; y: number } {
+    const margen = 8;
+    const w = nodo.offsetWidth;
+    const h = nodo.offsetHeight;
+    const maxX = Math.max(margen, window.innerWidth - w - margen);
+    const maxY = Math.max(margen, window.innerHeight - h - margen);
+    return {
+      x: Math.min(Math.max(margen, this.posChatX), maxX),
+      y: Math.min(Math.max(margen, this.posChatY), maxY)
+    };
   }
 
   /**
