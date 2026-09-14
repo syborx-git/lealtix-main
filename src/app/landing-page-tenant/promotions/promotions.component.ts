@@ -57,6 +57,32 @@ export class PromotionsComponent implements OnInit {
       code: 'BIENVENIDA10'
     }));
 
+    // Si no hay promociones reales, muestra slides de muestra para el carrusel
+    if (this.slides.length === 0) {
+      this.slides = [
+        {
+          title: '¡Bienvenido(a)!',
+          description: 'Recibe 10% de descuento en tu próxima compra',
+          validity: 'Válido: Todo el año',
+          badge: 'Temporada',
+          image: 'https://res.cloudinary.com/lealtix-media/image/upload/v1763671322/bienvenido_promo_vft9ud.jpg',
+          buttonText: 'Usar Descuento',
+          code: 'BIENVENIDA10'
+        },
+        {
+          title: '¡Feliz Cumpleaños!',
+          description: 'Beneficio especial en tu cumpleaños: un postre de cortesía con tu café favorito.',
+          validity: 'Válido: Todo el año',
+          badge: 'Cumpleaños',
+          image: 'https://res.cloudinary.com/lealtix-media/image/upload/v1763671826/concepto-letras-feliz-cumpleanos_23-2148499329_svaq6m.avif',
+          buttonText: 'Usar Descuento',
+          code: 'CUMPLE10'
+        }
+      ];
+      this.activePromoIndex = 0;
+      return;
+    }
+
     // Vista previa: si solo hay 1 promoción real, agrega una de cumpleaños
     // reutilizando la misma imagen para probar el carrusel con 2 slides.
     if (this.slides.length === 1) {
