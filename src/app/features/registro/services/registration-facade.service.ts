@@ -181,21 +181,27 @@ export class RegistrationFacadeService {
     this._paymentError.set(null);
     this._paymentErrorDetails.set(null);
 
-    const emailVal = this.registroForm.getRawValue()?.tenant?.email || '';
+    const formValues = this.registroForm.getRawValue()?.tenant || {};
+    const emailVal = formValues.email || '';
+    const nameVal = formValues.fullName || '';
     const payload = {
       email: emailVal,
-      plan: 'mensual'
+      plan: 'mensual',
+      userId: currentUserId,
+      name: nameVal,
+      amount: 29900,
+      currency: 'usd'
     };
 
     this.paymentService.createStripePaymentIntent(payload).subscribe({
       next: async (res: any) => {
-        const clientSec = res.object.clientSecret;
+        const clientSec = res?.object?.clientSecret || res?.clientSecret;
         this._clientSecret.set(clientSec);
 
         // Esperar a que el elemento contenedor esté disponible en el DOM
         setTimeout(async () => {
           const container = document.getElementById('payment-element');
-          if (container) {
+          if (container && clientSec) {
             const mounted = await this.stripeGateway.mountPaymentElement(
               container,
               clientSec,

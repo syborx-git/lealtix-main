@@ -306,9 +306,10 @@ export class LealbotComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.currentQuickReplies = LEALBOT_MESSAGES.GREETING_INITIAL.quick_reply || [];
     }
     this.shouldScroll = true;
-    // Cuando cambia el estado (abrir/cerrar), se "acopla" la posición elegida
-    // (con margen de tiempo para que el elemento ya esté medible en pantalla).
-    setTimeout(() => this.aplicarPosicionGuardada(), 60);
+    // Aplicar la posición guardada ANTES de que el navegador pinte, para que el
+    // chat abra ya en su lugar y NO se vea primero en la posición por defecto
+    // (evita el "flash"/brinco de derecha a su posición).
+    requestAnimationFrame(() => this.aplicarPosicionGuardada());
   }
 
   /**
