@@ -7,6 +7,7 @@ import { CancelPaymentComponent } from './cancel-payment/cancel-payment.componen
 import { LandingPageTenantComponent } from './landing-page-tenant/landing-page.component';
 import { LandingPageHotelComponent } from './features/landing-page-hotel/landing-page-hotel.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { FacturarComponent } from './facturar/facturar.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'checkout/cancel', component: CancelPaymentComponent },
   { path: 'landing-page/:slug', component: LandingPageTenantComponent },
   { path: 'landing-page-hotel/:slug', component: LandingPageHotelComponent },
-  { path: 'privacy', component: PrivacyComponent }
+  { path: 'privacy', component: PrivacyComponent },
+  { path: 'facturar/:orderId', component: FacturarComponent }
 ];
 
