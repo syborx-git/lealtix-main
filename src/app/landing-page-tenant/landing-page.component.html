@@ -1,4 +1,4 @@
-
+<ng-container *ngIf="!customSiteHtml">
   <app-nav-bar
     [logoUrl]="navBarData.logoUrl"
     [bussinessName]="navBarData.bussinessName"
@@ -8,26 +8,26 @@
     [hasPromotions]="hasPromotions"
   ></app-nav-bar>
 
-<app-promotions [tenantId]="tenantId" *ngIf="hasPromotions"></app-promotions>
+  <app-promotions [tenantId]="tenantId"></app-promotions>
 
-<app-menu
+  <app-menu
     [menuCategorias]="menuCategorias"
     [defaultImg]="''"></app-menu>
 
-<!-- Banner Promocional 20% -->
-<section class="promo-banner-container">
-  <div class="promo-content">
-    <h2 class="promo-title">20% Off Your First Order</h2>
-    <p class="promo-description">
-      Disfruta de un descuento especial en tu primer pedido. Conoce nuestras especialidades artesanales recién horneadas.
-    </p>
-    <button type="button" class="promo-btn">Learn More</button>
-  </div>
-</section>
+  <!-- Banner Promocional 20% -->
+  <section class="promo-banner-container">
+    <div class="promo-content">
+      <h2 class="promo-title">20% Off Your First Order</h2>
+      <p class="promo-description">
+        Disfruta de un descuento especial en tu primer pedido. Conoce nuestras especialidades artesanales recién horneadas.
+      </p>
+      <button type="button" class="promo-btn">Learn More</button>
+    </div>
+  </section>
 
-<app-offer [tenantId]="tenantId"></app-offer>
+  <app-offer [tenantId]="tenantId"></app-offer>
 
-<app-footer
+  <app-footer
     [dir]="footerData.dir"
     [tel]="footerData.tel"
     [bussinesEmail]="footerData.bussinesEmail"
@@ -40,15 +40,21 @@
     [bussinessName]="navBarData.bussinessName"
   ></app-footer>
 
-<!-- Lealbot Chatbot -->
-<app-lealbot [tenantId]="tenantId"></app-lealbot>
+  <!-- Lealbot Chatbot -->
+  <app-lealbot [tenantId]="tenantId"></app-lealbot>
 
-<!-- Back to Top Button -->
-<button
-  *ngIf="showBackToTop"
-  (click)="scrollToTop()"
-  class="fixed bottom-4 right-20 z-1000 w-14 h-14 rounded-full bg-light text-espresso shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
->
-  <span class="material-symbols-outlined">expand_less</span>
-</button>
+  <!-- Back to Top Button -->
+  <button
+    *ngIf="showBackToTop"
+    (click)="scrollToTop()"
+    class="fixed bottom-4 right-20 z-1000 w-14 h-14 rounded-full bg-light text-espresso shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+  >
+    <span class="material-symbols-outlined">expand_less</span>
+  </button>
+</ng-container>
 
+<div
+  *ngIf="customSiteHtml"
+  class="custom-site-wrapper"
+  [innerHTML]="getCustomSiteHtml()"
+></div>

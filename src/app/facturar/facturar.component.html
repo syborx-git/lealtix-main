@@ -1,0 +1,75 @@
+<div class="facturar-wrapper">
+  <div class="facturar-card">
+    <h1 class="facturar-title">Factura de tu compra</h1>
+
+    <div *ngIf="loading" class="facturar-state">Cargando orden...</div>
+    <div *ngIf="error" class="facturar-state facturar-error">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && order">
+      <div class="facturar-resumen">
+        <div class="facturar-resumen-row">
+          <span>Ticket</span>
+          <span>#{{ order.id?.slice(0, 8) | uppercase }}</span>
+        </div>
+        <div class="facturar-resumen-row">
+          <span>Cliente</span>
+          <span>{{ order.customerName || 'Cliente General' }}</span>
+        </div>
+        <ul class="facturar-items">
+          <li *ngFor="let item of order.items">
+            <span>{{ item.cantidad }}x {{ item.productName || item.prod }}</span>
+            <span>{{ fmt((item.precioUnitario || item.precio || 0) * item.cantidad) }}</span>
+          </li>
+        </ul>
+        <div class="facturar-resumen-row facturar-total">
+          <span>Total</span>
+          <span>{{ fmt(total) }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="!invoice">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="facturar-form">
+          <div class="facturar-field">
+            <label>RFC</label>
+            <input type="text" formControlName="rfc" placeholder="XAXX010101000" />
+            <small *ngIf="form.get('rfc')?.invalid && form.get('rfc')?.touched">El RFC es obligatorio.</small>
+          </div>
+
+          <div class="facturar-field">
+            <label>Razón social</label>
+            <input type="text" formControlName="razonSocial" placeholder="Nombre o razón social" />
+            <small *ngIf="form.get('razonSocial')?.invalid && form.get('razonSocial')?.touched">La razón social es obligatoria.</small>
+          </div>
+
+          <div class="facturar-field">
+            <label>Régimen fiscal</label>
+            <select formControlName="regimen">
+              <option *ngFor="let r of regimenOptions" [value]="r.value">{{ r.label }}</option>
+            </select>
+          </div>
+
+          <div class="facturar-field">
+            <label>Correo electrónico</label>
+            <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+            <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">Correo inválido.</small>
+          </div>
+
+          <button type="submit" class="facturar-btn" [disabled]="submitting">
+            {{ submitting ? 'Generando factura...' : 'Generar factura' }}
+          </button>
+
+          <div *ngIf="submitError" class="facturar-state facturar-error">{{ submitError }}</div>
+        </form>
+      </div>
+
+      <div *ngIf="invoice" class="facturar-result">
+        <div class="facturar-result-icon">✓</div>
+        <h2>¡Factura generada!</h2>
+        <p class="facturar-uuid">UUID: {{ invoice.uuid }}</p>
+        <p class="facturar-total-text">Total: {{ fmt(invoice.total || total) }}</p>
+        <button type="button" class="facturar-btn" (click)="downloadPdf()">Descargar PDF</button>
+        <p class="facturar-note">También enviamos la factura a tu correo.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

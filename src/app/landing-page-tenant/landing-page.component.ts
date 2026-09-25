@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { OfferComponent } from './offer/offer.component';
 import { PromotionsComponent } from './promotions/promotions.component';
@@ -50,13 +51,19 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
   };
   menuCategorias: any[] = [];
   tenantId: number = 0;
+  customSiteHtml: string = '';
 
   constructor(private renderer: Renderer2,
               private route: ActivatedRoute,
               private router: Router,
               private tenantLandingPageService: TenantLandingPageService,
-              private productsMenuService: ProductsMenuService
+              private productsMenuService: ProductsMenuService,
+              private sanitizer: DomSanitizer
   ) {}
+
+  getCustomSiteHtml(): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.customSiteHtml);
+  }
   // Para mostrar u ocultar el botón Back to Top
   showBackToTop = false;
 
@@ -70,6 +77,7 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
         next: (data: any) => {
           this.tenantId = data.object?.tenant?.id;
           const tenantObj = data.object?.tenant || {};
+          this.customSiteHtml = tenantObj.customSiteHtml || '';
           this.navBarData = {
             logoUrl: tenantObj.logoUrl || '',
             bussinessName: tenantObj.bussinessName || tenantObj.nombreNegocio || tenantObj.nombre || '',
