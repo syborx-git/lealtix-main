@@ -52,6 +52,8 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
   menuCategorias: any[] = [];
   tenantId: number = 0;
   customSiteHtml: string = '';
+  // Evita el "flash": no renderizar nada hasta saber si hay sitio personalizado.
+  loaded = false;
 
   constructor(private renderer: Renderer2,
               private route: ActivatedRoute,
@@ -125,10 +127,12 @@ export class LandingPageTenantComponent implements OnInit, OnDestroy {
               error: () => this.hasPromotions = false
             });
           }
+          this.loaded = true;
         },
         error: (err: any) => {
           // Si hay un error (por ejemplo, slug no válido), redirige a la página de error
           console.error('Error al cargar los datos del tenant:', err);
+          this.loaded = true;
           this.router.navigate(['/error']);
         }
       });

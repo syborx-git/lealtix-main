@@ -1,4 +1,4 @@
-<ng-container *ngIf="!customSiteHtml">
+<ng-container *ngIf="loaded && !customSiteHtml">
   <app-nav-bar
     [logoUrl]="navBarData.logoUrl"
     [bussinessName]="navBarData.bussinessName"
@@ -39,22 +39,23 @@
     [schelules]="footerData.schelules"
     [bussinessName]="navBarData.bussinessName"
   ></app-footer>
-
-  <!-- Lealbot Chatbot -->
-  <app-lealbot [tenantId]="tenantId"></app-lealbot>
-
-  <!-- Back to Top Button -->
-  <button
-    *ngIf="showBackToTop"
-    (click)="scrollToTop()"
-    class="fixed bottom-4 right-20 z-1000 w-14 h-14 rounded-full bg-light text-espresso shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
-  >
-    <span class="material-symbols-outlined">expand_less</span>
-  </button>
 </ng-container>
 
 <div
-  *ngIf="customSiteHtml"
+  *ngIf="loaded && customSiteHtml"
   class="custom-site-wrapper"
   [innerHTML]="getCustomSiteHtml()"
 ></div>
+
+<!-- Lealbot Chatbot: SIEMPRE presente (también sobre el sitio personalizado del admin).
+     Conoce el restaurante por el tenantId resuelto desde el slug. -->
+<app-lealbot *ngIf="loaded" [tenantId]="tenantId"></app-lealbot>
+
+<!-- Back to Top Button -->
+<button
+  *ngIf="showBackToTop"
+  (click)="scrollToTop()"
+  class="fixed bottom-4 right-20 z-1000 w-14 h-14 rounded-full bg-light text-espresso shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+>
+  <span class="material-symbols-outlined">expand_less</span>
+</button>
